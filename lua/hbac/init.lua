@@ -4,24 +4,11 @@ local id = vim.api.nvim_create_augroup("hbac", {
 
 local M = {
 	persistant_buffers = {},
-	last = nil
 }
 
 M.persist_buffer = function(bufnr)
 	bufnr = bufnr or vim.api.nvim_get_current_buf()
 	M.persistant_buffers[bufnr] = true
-end
-
-M.close_last = function()
-	if M.last == nil then
-		return
-	end
-
-	if not M.persistant_buffers[M.last] then
-		vim.cmd('bd ' .. tostring(M.last))
-	end
-
-	M.last = nil
 end
 
 M.setup = function()
@@ -54,7 +41,37 @@ M.setup = function()
 				return
 			end
 
-			M.close_last()
+			if M.last == nil then
+				return
+			end
+
+			if M.persistant_buffers[M.last] then
+				return
+			end
+
+			local min = 2 ^ 1023
+			local buffers = vim.api.nvim_list_bufs()
+			local num_buffers = 0
+			for _, buf in ipairs(buffers) do
+				local name = vim.api.nvim_buf_get_name(buf)
+				local listed = vim.api.nvim_buf_get_option(buf, 'buflisted')
+				if name ~= "" and listed then
+					num_buffers = num_buffers + 1
+					if not M.persistant_buffers[buf] then
+						min = math.min(min, buf)
+					end
+				end
+			end
+
+			if num_buffers <= 10 then
+				return
+			end
+
+			if min >= 2 ^ 1023 then
+				return
+			end
+
+			vim.api.nvim_buf_delete(min, {})
 		end
 	})
 
