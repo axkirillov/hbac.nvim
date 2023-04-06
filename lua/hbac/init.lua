@@ -11,7 +11,12 @@ M.persist_buffer = function(bufnr)
 	M.persistant_buffers[bufnr] = true
 end
 
-M.setup = function()
+M.setup = function(opts)
+	opts = opts or {
+		autoclose = true,
+		threshold = 10
+	}
+
 	vim.api.nvim_create_autocmd({ "BufRead" }, {
 		group = id,
 		pattern = { "*" },
@@ -26,6 +31,10 @@ M.setup = function()
 		end
 	})
 
+	if not opts.autoclose then
+		return
+	end
+
 	vim.api.nvim_create_autocmd({ "BufEnter" }, {
 		group = id,
 		pattern = { "*" },
@@ -34,14 +43,6 @@ M.setup = function()
 			local buftype = vim.api.nvim_buf_get_option(bufnr, 'buftype')
 			-- if the buffer is not a file - do nothing
 			if buftype ~= "" then
-				return
-			end
-
-			if bufnr == M.last then
-				return
-			end
-
-			if M.last == nil then
 				return
 			end
 
@@ -63,7 +64,11 @@ M.setup = function()
 				end
 			end
 
-			if num_buffers <= 10 then
+			if num_buffers <= opts.threshold then
+				return
+			end
+
+			if min == bufnr then
 				return
 			end
 
@@ -72,22 +77,6 @@ M.setup = function()
 			end
 
 			vim.api.nvim_buf_delete(min, {})
-		end
-	})
-
-	vim.api.nvim_create_autocmd({ "BufLeave" }, {
-		group = id,
-		pattern = { "*" },
-		callback = function()
-			local bufnr = vim.api.nvim_get_current_buf()
-			local buftype = vim.api.nvim_buf_get_option(bufnr, 'buftype')
-
-			-- if the buffer is not a file - do nothing
-			if buftype ~= "" then
-				return
-			end
-
-			M.last = bufnr
 		end
 	})
 end
