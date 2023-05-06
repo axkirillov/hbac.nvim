@@ -8,10 +8,10 @@ local id = vim.api.nvim_create_augroup("hbac", {
 })
 
 M.setup = function(opts)
-	opts = opts or {
+	opts = vim.tbl_extend("force", {
 		autoclose = true,
-		threshold = 10
-	}
+		threshold = 10,
+	}, opts)
 
 	vim.api.nvim_create_autocmd({ "BufRead" }, {
 		group = id,
