@@ -31,7 +31,8 @@ M.setup_autoclose = function()
 			local buffers = vim.tbl_filter(function(buf)
 				local name = vim.api.nvim_buf_get_name(buf)
 				local listed = vim.api.nvim_buf_get_option(buf, "buflisted")
-				if name ~= "" and listed then
+				local windows_with_buf = vim.fn.win_findbuf(buf)
+				if name ~= "" and listed and #windows_with_buf == 0 then
 					return true
 				end
 				return false
