@@ -22,6 +22,9 @@ M.setup = function(opts)
 				once = true,
 				callback = function()
 					local bufnr = vim.api.nvim_get_current_buf()
+					if state.is_pinned(bufnr) then
+						return
+					end
 					state.toggle_pin(bufnr)
 				end
 			})
