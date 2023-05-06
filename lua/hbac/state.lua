@@ -1,5 +1,6 @@
 local M = {
 	pinned_buffers = {},
+	autoclose_enabled = false,
 }
 
 M.toggle_pin = function(bufnr)
