@@ -11,7 +11,7 @@ M.setup = function(opts)
 	opts = vim.tbl_extend("force", {
 		autoclose = true,
 		threshold = 10,
-	}, opts)
+	}, opts or {})
 
 	vim.api.nvim_create_autocmd({ "BufRead" }, {
 		group = id,
