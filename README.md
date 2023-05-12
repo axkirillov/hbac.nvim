@@ -52,3 +52,20 @@ require("hbac").toggle_pin()
 require("hbac").close_unpinned()
 require("hbac").toggle_autoclose()
 ```
+
+## How to check the pin status of the current buffer
+
+The `state` module exposes the `is_pinned` function, which returns the pin status of any buffer as a boolean value. You can use this check to display the pin status in your statusline or wherever you find convenient. Here is an example [lualine.nvim](https://github.com/nvim-lualine/lualine.nvim) integration:
+
+```lua
+lualine_c = {
+    {
+      function()
+        local cur_buf = vim.api.nvim_get_current_buf()
+        return require("hbac.state").is_pinned(cur_buf) and "📍" or ""
+        -- tip: nerd fonts have pinned/unpinned icons!
+      end,
+      color = { fg = "#ef5f6b", gui = "bold" },
+    }
+  }
+```
