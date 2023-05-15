@@ -1,5 +1,6 @@
-local state = require("hbac.state")
 local autocommands = require("hbac.autocommands")
+local state = require("hbac.state")
+local utils = require("hbac.utils")
 
 local M = {
 	subcommands = {},
@@ -7,9 +8,10 @@ local M = {
 
 M.subcommands.close_unpinned = function()
 	local curbufnr = vim.api.nvim_get_current_buf()
-	local buflist = vim.api.nvim_list_bufs()
+	local buflist = utils.get_buffers()
 	for _, bufnr in ipairs(buflist) do
-		if vim.bo[bufnr].buflisted and bufnr ~= curbufnr and not state.is_pinned(bufnr) then
+		local windows_with_buf = vim.fn.win_findbuf(bufnr)
+		if bufnr ~= curbufnr and not state.is_pinned(bufnr) and #windows_with_buf == 0 then
 			require("hbac.setup").opts.close_command(bufnr)
 		end
 	end
