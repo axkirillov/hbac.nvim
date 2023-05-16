@@ -4,13 +4,8 @@ local M = {
 }
 
 M.toggle_pin = function(bufnr)
-	if M.pinned_buffers[bufnr] == true then
-		M.pinned_buffers[bufnr] = false
-		return "unpinned"
-	end
-
-	M.pinned_buffers[bufnr] = true
-	return "pinned"
+	M.pinned_buffers[bufnr] = not M.pinned_buffers[bufnr]
+	return M.pinned_buffers[bufnr]
 end
 
 M.is_pinned = function(bufnr)
