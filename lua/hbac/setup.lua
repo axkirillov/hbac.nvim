@@ -2,12 +2,21 @@ local state = require("hbac.state")
 
 local M = {
 	opts = {
-		threshold = 10,
 		autoclose = true,
+		threshold = 10,
 		close_buffers_with_windows = false,
 		close_command = function(bufnr)
 			vim.api.nvim_buf_delete(bufnr, {})
 		end,
+		telescope = {
+			mappings = {
+				close_unpinned = { "<M-c>" },
+				delete_buffer = { "<M-x>" },
+				toggle_all = { "<M-a>" },
+				toggle_selections = { "<M-y>" },
+			},
+			pin_icons = { "󰐃", "", "DiagnosticError", "DiagnosticOk" },
+		},
 	},
 }
 
@@ -17,7 +26,7 @@ local id = vim.api.nvim_create_augroup("hbac", {
 
 M.setup = function(user_opts)
 	local command = require("hbac.command")
-	M.opts = vim.tbl_extend("force", M.opts, user_opts or {})
+	M.opts = vim.tbl_deep_extend("force", M.opts, user_opts or {})
 
 	vim.api.nvim_create_autocmd({ "BufRead" }, {
 		group = id,

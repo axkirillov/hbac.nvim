@@ -1,4 +1,4 @@
-M = {}
+local M = {}
 
 M.get_buffers = function()
 	return vim.tbl_filter(function(bufnr)
