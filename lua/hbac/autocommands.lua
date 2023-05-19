@@ -24,12 +24,8 @@ M.autoclose.setup = function()
 			end
 
 			local buffers = vim.tbl_filter(function(buf)
-				local name = vim.api.nvim_buf_get_name(buf)
-				local listed = vim.api.nvim_buf_get_option(buf, "buflisted")
-				if name ~= "" and listed then
-					return true
-				end
-				return false
+				-- Filter out buffers that are not listed
+				return vim.api.nvim_buf_get_option(buf, "buflisted")
 			end, vim.api.nvim_list_bufs())
 			local num_buffers = #buffers
 			if num_buffers <= config.threshold then
@@ -38,7 +34,7 @@ M.autoclose.setup = function()
 
 			local buffers_to_close = num_buffers - config.threshold
 
-			-- Buffer sorted by current > pinned > is_in_window > others (by bufnr)
+			-- Buffer sorted by current > pinned > is_in_window > named > unnamed
 			table.sort(buffers, function(a, b)
 				if a == current_buf or b == current_buf then
 					return b == current_buf
@@ -52,6 +48,13 @@ M.autoclose.setup = function()
 				if a_windowed ~= b_windowed then
 					return b_windowed
 				end
+
+				local a_unnamed = vim.api.nvim_buf_get_name(a) == ""
+				local b_unnamed = vim.api.nvim_buf_get_name(b) == ""
+				if a_unnamed ~= b_unnamed then
+					return a_unnamed
+				end
+
 				return a < b
 			end)
 
