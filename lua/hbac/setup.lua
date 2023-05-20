@@ -25,7 +25,10 @@ local M = {
 					toggle_selections = "<M-y>",
 				},
 			},
-			pin_icons = { "󰐃", "", "DiagnosticError", "DiagnosticOk" },
+			pin_icons = {
+				pinned = { "󰐃 ", hl = "DiagnosticOk" },
+				unpinned = { "󰤱 ", hl = "DiagnosticError" },
+			},
 		},
 	},
 }

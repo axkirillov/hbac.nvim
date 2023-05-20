@@ -61,7 +61,10 @@ require("hbac").setup({
       },
     },
     -- Pinned/unpinned icons and their hl groups. Defaults to nerdfont icons
-    pin_icons = { "󰐃", "", "DiagnosticError", "DiagnosticOk" },
+    pin_icons = {
+      pinned = { "󰐃 ", hl = "DiagnosticOk" },
+      unpinned = { "󰤱 ", hl = "DiagnosticError" },
+    },
   },
 })
 ```
