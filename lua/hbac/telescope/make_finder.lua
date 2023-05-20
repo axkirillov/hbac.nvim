@@ -14,6 +14,7 @@ M.make_finder = function()
 		for _, bufnr in ipairs(buflist) do
 			local bufname = vim.api.nvim_buf_get_name(bufnr)
 			table.insert(entries, {
+				filename = bufname,
 				display = display,
 				value = bufnr,
 				ordinal = bufname,
@@ -26,6 +27,7 @@ M.make_finder = function()
 		results = get_entries(),
 		entry_maker = function(entry)
 			return {
+				filename = entry.filename,
 				value = entry.value,
 				display = entry.display,
 				ordinal = entry.ordinal,
