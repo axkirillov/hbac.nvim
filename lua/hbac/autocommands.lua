@@ -1,6 +1,7 @@
 local M = {}
 
 local state = require("hbac.state")
+local utils = require("hbac.utils")
 
 local CONSTANTS = {
 	AUGROUP_AUTO_CLOSE = "hbac_autoclose",
@@ -60,10 +61,7 @@ M.autoclose.setup = function()
 
 			for i = 1, buffers_to_close, 1 do
 				local buffer = buffers[i]
-				local buffer_windows = vim.fn.win_findbuf(buffer)
-				if state.is_pinned(buffer) or buffer == current_buf then
-					break
-				elseif #buffer_windows > 0 and not config.close_buffers_with_windows then
+				if not utils.buf_autoclosable(buffer) then
 					break
 				else
 					config.close_command(buffer)

@@ -10,7 +10,7 @@ M.make_finder = function()
 
 	local function get_entries()
 		local entries = {}
-		local buflist = utils.get_buffers()
+		local buflist = utils.get_listed_buffers()
 		for _, bufnr in ipairs(buflist) do
 			local bufname = vim.api.nvim_buf_get_name(bufnr)
 			table.insert(entries, {
