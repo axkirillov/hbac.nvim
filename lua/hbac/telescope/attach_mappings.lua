@@ -5,7 +5,7 @@ local state = require("hbac.state")
 local subcommands = require("hbac.command.subcommands")
 local make_finder = require("hbac.telescope.make_finder").make_finder
 
-M = {}
+local M = {}
 
 local function execute_telescope_action(prompt_bufnr, action)
 	local picker = action_state.get_current_picker(prompt_bufnr)
@@ -30,8 +30,11 @@ end
 local function hbac_toggle_selections(prompt_bufnr)
 	execute_telescope_action(prompt_bufnr, state.toggle_pin)
 end
-local function hbac_toggle_all(prompt_bufnr)
-	execute_telescope_action(prompt_bufnr, subcommands.toggle_all)
+local function hbac_pin_all(prompt_bufnr)
+	execute_telescope_action(prompt_bufnr, subcommands.pin_all)
+end
+local function hbac_unpin_all(prompt_bufnr)
+	execute_telescope_action(prompt_bufnr, subcommands.unpin_all)
 end
 local function hbac_close_unpinned(prompt_bufnr)
 	execute_telescope_action(prompt_bufnr, subcommands.close_unpinned)
@@ -44,18 +47,13 @@ M.attach_mappings = function(_, map)
 	local hbac_telescope_actions = {
 		close_unpinned = hbac_close_unpinned,
 		delete_buffer = hbac_delete_buffer,
-		toggle_all = hbac_toggle_all,
+		pin_all = hbac_pin_all,
+		unpin_all = hbac_unpin_all,
 		toggle_selections = hbac_toggle_selections,
 	}
 
-	local modes = { "n", "i" }
-	for hbac_cmd, keys in pairs(hbac_config.telescope.mappings) do
-		if #keys == 1 then
-			keys = { keys[1], keys[1] }
-		end
-		for i, key in ipairs(keys) do
-			local mode = modes[i]
-
+	for mode, hbac_cmds in pairs(hbac_config.telescope.mappings) do
+		for hbac_cmd, key in pairs(hbac_cmds) do
 			map(mode, key, hbac_telescope_actions[hbac_cmd])
 		end
 	end

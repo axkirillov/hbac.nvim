@@ -3,9 +3,7 @@ local hbac_config = require("hbac.setup").opts
 local state = require("hbac.state")
 local utils = require("hbac.utils")
 
-local M = {
-	toggle_all_value = true,
-}
+local M = {}
 
 M.close_unpinned = function()
 	local buflist = utils.get_listed_buffers()
@@ -22,13 +20,19 @@ M.toggle_pin = function()
 	return bufnr, pinned_state
 end
 
-M.toggle_all = function()
+M.set_all = function(pin_value)
 	local buflist = utils.get_listed_buffers()
 	for _, bufnr in ipairs(buflist) do
-		state.pinned_buffers[bufnr] = M.toggle_all_value
+		state.pinned_buffers[bufnr] = pin_value
 	end
-	M.toggle_all_value = not M.toggle_all_value
-	return M.toggle_all_value
+end
+
+M.pin_all = function()
+	M.set_all(true)
+end
+
+M.unpin_all = function()
+	M.set_all(false)
 end
 
 M.toggle_autoclose = function()

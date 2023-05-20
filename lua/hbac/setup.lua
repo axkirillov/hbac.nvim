@@ -10,10 +10,20 @@ local M = {
 		end,
 		telescope = {
 			mappings = {
-				close_unpinned = { "<M-c>" },
-				delete_buffer = { "<M-x>" },
-				toggle_all = { "<M-a>" },
-				toggle_selections = { "<M-y>" },
+				n = {
+					close_unpinned = "<M-c>",
+					delete_buffer = "<M-x>",
+					pin_all = "<M-a>",
+					unpin_all = "<M-u>",
+					toggle_selections = "<M-y>",
+				},
+				i = {
+					close_unpinned = "<M-c>",
+					delete_buffer = "<M-x>",
+					pin_all = "<M-a>",
+					unpin_all = "<M-u>",
+					toggle_selections = "<M-y>",
+				},
 			},
 			pin_icons = { "󰐃", "", "DiagnosticError", "DiagnosticOk" },
 		},
