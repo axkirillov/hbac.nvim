@@ -8,11 +8,9 @@ local M = {
 }
 
 M.close_unpinned = function()
-	local curbufnr = vim.api.nvim_get_current_buf()
-	local buflist = utils.get_buffers()
+	local buflist = utils.get_listed_buffers()
 	for _, bufnr in ipairs(buflist) do
-		local windows_with_buf = vim.fn.win_findbuf(bufnr)
-		if bufnr ~= curbufnr and not state.is_pinned(bufnr) and #windows_with_buf == 0 then
+		if utils.buf_autoclosable(bufnr) then
 			hbac_config.close_command(bufnr)
 		end
 	end
@@ -25,7 +23,7 @@ M.toggle_pin = function()
 end
 
 M.toggle_all = function()
-	local buflist = utils.get_buffers()
+	local buflist = utils.get_listed_buffers()
 	for _, bufnr in ipairs(buflist) do
 		state.pinned_buffers[bufnr] = M.toggle_all_value
 	end
