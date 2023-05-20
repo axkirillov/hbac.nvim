@@ -16,9 +16,14 @@ M.subcommands.toggle_pin = function()
 	vim.notify(bufnr .. " " .. pinned_state, "info", notify_opts)
 end
 
-M.subcommands.toggle_all = function()
-	local toggle_all_value = subcommands.toggle_all() and "pinned" or "unpinned"
-	vim.notify(toggle_all_value .. " all buffers", "info", notify_opts)
+M.subcommands.pin_all = function()
+	subcommands.pin_all()
+	vim.notify("Pinned all buffers", "info", notify_opts)
+end
+
+M.subcommands.unpin_all = function()
+	subcommands.unpin_all()
+	vim.notify("Unpinned all buffers", "info", notify_opts)
 end
 
 M.subcommands.toggle_autoclose = function()

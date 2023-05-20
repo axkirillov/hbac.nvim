@@ -26,7 +26,6 @@ with [lazy.nvim](https://github.com/folke/lazy.nvim)
 ```lua	
 {
   'axkirillov/hbac.nvim',
-  -- For Telescope integration
   dependencies = {
   -- these are optional, add them, if you want the telescope module
     'nvim-telescope/telescope.nvim',
@@ -50,15 +49,19 @@ require("hbac").setup({
   close_buffers_with_windows = false, -- hbac will close buffers with associated windows if this option is `true`
   telescope = {
     mappings = {
-      -- Map the same key to both "n" and "i" modes
-      toggle_selections = { "<M-y>" },
-      toggle_all        = { "<M-a>" },
-      -- Or, set separately:   "n"         "i"
-      close_unpinned    = { "<leader>u", "<M-c>" },
-      delete_buffer     = { "<leader>d", "<M-d>" },
+      n = {
+        close_unpinned = "<M-c>",
+        delete_buffer = "<M-x>",
+        pin_all = "<M-a>",
+        unpin_all = "<M-u>",
+        toggle_selections = "<M-y>",
+      },
+      i = {
+        -- as above
+      },
     },
     -- Pinned/unpinned icons and their hl groups. Defaults to nerdfont icons
-    pin_icons = { "󰐃", "", "DiagnosticError", "Normal" },
+    pin_icons = { "󰐃", "", "DiagnosticError", "DiagnosticOk" },
   },
 })
 ```
@@ -69,31 +72,35 @@ Let hbac do its magick 😊
 or
 
 - `:Hbac toggle_pin` - toggle a pin of the current buffer to prevent it from being auto-closed
-- `:Hbac close_unpinned` - close all unedited/unpinned buffers
+- `:Hbac close_unpinned` - close all unpinned buffers
+- `:Hbac pin_all` - pin all buffers
+- `:Hbac unpin_all` - unpin all buffers
 - `:Hbac toggle_autoclose` - toggle autoclose behavior
 - `:Hbac telescope` - open the telescope picker
 
 or, if you prefer to use lua:
 ```lua
-require("hbac").toggle_pin()
-require("hbac").close_unpinned()
-require("hbac").toggle_autoclose()
-require("hbac").telescope()
+local hbac = require("hbac")
+hbac.toggle_pin()
+hbac.close_unpinned()
+hbac.pin_all()
+hbac.unpin_all()
+hbac.toggle_autoclose()
+hbac.telescope()
 ```
 
-## Telescope.nvim integration
+## Telescope integration
 
-The plugin provides a [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim) integration to view and manage the pin states of buffers. This requires telescope and its dependency [plenary.nvim](https://github.com/nvim-lua/plenary.nvim). [nvim-web-devicons](https://github.com/nvim-tree/nvim-web-devicons) is also recommended. If `telescope.enabled` is set to false, the integration module will not be loaded.
+The plugin provides a [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim) integration to view and manage the pin states of buffers. This requires telescope and its dependency [plenary.nvim](https://github.com/nvim-lua/plenary.nvim). [nvim-web-devicons](https://github.com/nvim-tree/nvim-web-devicons) is also recommended.
 
 The picker provides the following actions:
 
-- `toggle_selections` - toggle the pin state of the selected buffers (either
+- `hbac_toggle_selections` - toggle the pin state of the selected buffers (either
   single or multi-selections)
-- `toggle_all` - toggle the pin state of all buffers to all-pinned or all-unpinned
-- `close_unpinned` - close all unpinned buffers, except those in windows. This
-  matches the behavior of `Hbac close_unpinned`
-- `delete_buffer` - delete the selected buffers with the function set in `opts.close_command` (`nvim_buf_delete` by default`)
-
+- `hbac_pin_all` - pin all buffers
+- `hbac_unpin_all` - unpin all buffers
+- `hbac_close_unpinned` - close all unpinned buffers
+- `hbac_delete_buffer` - delete the selected buffers with the function set in `opts.close_command` (`nvim_buf_delete` by default`)
 
 You can also call the picker function directly and pass a table of options (see `:h telescope.setup()` for valid option keys):
 
