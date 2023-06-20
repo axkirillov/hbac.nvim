@@ -7,7 +7,7 @@ end
 
 if missing ~= "" then
 	local msg = "Missing dependencies:" .. missing
-	vim.notify(msg, "error", { title = "Hbac" })
+	vim.notify(msg, vim.log.levels.ERROR, { title = "Hbac" })
 	return false
 end
 

@@ -8,27 +8,27 @@ local M = {
 
 M.subcommands.close_unpinned = function()
 	subcommands.close_unpinned()
-	vim.notify("Closed unpinned buffers", "info", notify_opts)
+	vim.notify("Closed unpinned buffers", vim.log.levels.INFO, notify_opts)
 end
 
 M.subcommands.toggle_pin = function()
 	local bufnr, pinned_state = subcommands.toggle_pin()
-	vim.notify(bufnr .. " " .. pinned_state, "info", notify_opts)
+	vim.notify(bufnr .. " " .. pinned_state, vim.log.levels.INFO, notify_opts)
 end
 
 M.subcommands.pin_all = function()
 	subcommands.pin_all()
-	vim.notify("Pinned all buffers", "info", notify_opts)
+	vim.notify("Pinned all buffers", vim.log.levels.INFO, notify_opts)
 end
 
 M.subcommands.unpin_all = function()
 	subcommands.unpin_all()
-	vim.notify("Unpinned all buffers", "info", notify_opts)
+	vim.notify("Unpinned all buffers", vim.log.levels.INFO, notify_opts)
 end
 
 M.subcommands.toggle_autoclose = function()
 	local autoclose_state = subcommands.toggle_autoclose() and "enabled" or "disabled"
-	vim.notify("Autoclose " .. autoclose_state, "info", notify_opts)
+	vim.notify("Autoclose " .. autoclose_state, vim.log.levels.INFO, notify_opts)
 end
 
 M.subcommands.telescope = function(opts)
@@ -45,7 +45,7 @@ M.vim_cmd_func = function(arg)
 	if M.subcommands[arg] then
 		M.subcommands[arg]()
 	else
-		vim.notify("Unknown command: " .. arg, "warn", notify_opts)
+		vim.notify("Unknown command: " .. arg, vim.log.levels.WARN, notify_opts)
 	end
 end
 
