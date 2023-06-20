@@ -1,70 +1,19 @@
-local state = require("hbac.state")
+local command = require("hbac.command")
+local autocommands = require("hbac.autocommands")
+local config = require("hbac.config")
 
 local M = {
-	opts = {
-		autoclose = true,
-		threshold = 10,
-		close_buffers_with_windows = false,
-		close_command = function(bufnr)
-			vim.api.nvim_buf_delete(bufnr, {})
-		end,
-		telescope = {
-			mappings = {
-				n = {
-					close_unpinned = "<M-c>",
-					delete_buffer = "<M-x>",
-					pin_all = "<M-a>",
-					unpin_all = "<M-u>",
-					toggle_selections = "<M-y>",
-				},
-				i = {
-					close_unpinned = "<M-c>",
-					delete_buffer = "<M-x>",
-					pin_all = "<M-a>",
-					unpin_all = "<M-u>",
-					toggle_selections = "<M-y>",
-				},
-			},
-			pin_icons = {
-				pinned = { "󰐃 ", hl = "DiagnosticOk" },
-				unpinned = { "󰤱 ", hl = "DiagnosticError" },
-			},
-		},
-	},
 }
 
-local id = vim.api.nvim_create_augroup("hbac", {
-	clear = false,
-})
-
 M.setup = function(user_opts)
-	local command = require("hbac.command")
-	M.opts = vim.tbl_deep_extend("force", M.opts, user_opts or {})
+	config.setup(user_opts)
 
-	vim.api.nvim_create_autocmd({ "BufRead" }, {
-		group = id,
-		pattern = { "*" },
-		callback = function()
-			vim.api.nvim_create_autocmd({ "InsertEnter", "BufModifiedSet" }, {
-				buffer = 0,
-				once = true,
-				callback = function()
-					local bufnr = vim.api.nvim_get_current_buf()
-					if state.is_pinned(bufnr) then
-						return
-					end
-					state.toggle_pin(bufnr)
-				end,
-			})
-		end,
-	})
+	autocommands.autopin.setup()
 
-	vim.api.nvim_create_user_command(command.vim_cmd_name, function(args)
-		command.vim_cmd_func(args.args)
-	end, command.vim_cmd_opts)
+	command.create_user_command()
 
-	if M.opts.autoclose then
-		require("hbac.autocommands").autoclose.setup()
+	if config.values.autoclose then
+		autocommands.autoclose.setup()
 	end
 end
 

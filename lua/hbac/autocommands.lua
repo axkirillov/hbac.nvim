@@ -1,20 +1,20 @@
-local M = {}
-
 local state = require("hbac.state")
 local utils = require("hbac.utils")
+local config = require("hbac.config")
 
-local CONSTANTS = {
-	AUGROUP_AUTO_CLOSE = "hbac_autoclose",
+local M = {
+	autoclose = {
+		name = "hbac_autoclose",
+	},
+	autopin = {
+		name = "hbac_autopin",
+	},
 }
 
-M.autoclose = {}
-
 M.autoclose.setup = function()
-	local config = require("hbac.setup").opts
-
 	state.autoclose_enabled = true
 	vim.api.nvim_create_autocmd({ "BufEnter" }, {
-		group = vim.api.nvim_create_augroup(CONSTANTS.AUGROUP_AUTO_CLOSE, { clear = true }),
+		group = vim.api.nvim_create_augroup(M.autoclose.name, { clear = true }),
 		pattern = { "*" },
 		callback = function()
 			local current_buf = vim.api.nvim_get_current_buf()
@@ -29,11 +29,11 @@ M.autoclose.setup = function()
 				return vim.api.nvim_buf_get_option(buf, "buflisted")
 			end, vim.api.nvim_list_bufs())
 			local num_buffers = #buffers
-			if num_buffers <= config.threshold then
+			if num_buffers <= config.values.threshold then
 				return
 			end
 
-			local buffers_to_close = num_buffers - config.threshold
+			local buffers_to_close = num_buffers - config.values.threshold
 
 			-- Buffer sorted by current > pinned > is_in_window > named > unnamed
 			table.sort(buffers, function(a, b)
@@ -64,7 +64,7 @@ M.autoclose.setup = function()
 				if not utils.buf_autoclosable(buffer) then
 					break
 				else
-					config.close_command(buffer)
+					config.values.close_command(buffer)
 				end
 			end
 		end,
@@ -75,8 +75,32 @@ M.autoclose.disable = function()
 	-- pcall failure likely indicates that augroup doesn't exist - which is fine, since its
 	-- autocmds is effectively disabled in that case
 	pcall(function()
-		vim.api.nvim_del_augroup_by_name(CONSTANTS.AUGROUP_AUTO_CLOSE)
+		vim.api.nvim_del_augroup_by_name(M.autoclose.name)
 	end)
+end
+
+
+M.autopin.setup = function()
+	local id = vim.api.nvim_create_augroup(M.autopin.name, {
+		clear = false,
+	})
+	vim.api.nvim_create_autocmd({ "BufRead" }, {
+		group = id,
+		pattern = { "*" },
+		callback = function()
+			vim.api.nvim_create_autocmd({ "InsertEnter", "BufModifiedSet" }, {
+				buffer = 0,
+				once = true,
+				callback = function()
+					local bufnr = vim.api.nvim_get_current_buf()
+					if state.is_pinned(bufnr) then
+						return
+					end
+					state.toggle_pin(bufnr)
+				end,
+			})
+		end,
+	})
 end
 
 return M

@@ -1,59 +1,30 @@
 local subcommands = require("hbac.command.subcommands")
-
-local notify_opts = { title = "Hbac" }
+local config = require("hbac.command.config")
 
 local M = {
-	subcommands = {},
+	subcommands = subcommands,
 }
-
-M.subcommands.close_unpinned = function()
-	subcommands.close_unpinned()
-	vim.notify("Closed unpinned buffers", vim.log.levels.INFO, notify_opts)
-end
-
-M.subcommands.toggle_pin = function()
-	local bufnr, pinned_state = subcommands.toggle_pin()
-	vim.notify(bufnr .. " " .. pinned_state, vim.log.levels.INFO, notify_opts)
-end
-
-M.subcommands.pin_all = function()
-	subcommands.pin_all()
-	vim.notify("Pinned all buffers", vim.log.levels.INFO, notify_opts)
-end
-
-M.subcommands.unpin_all = function()
-	subcommands.unpin_all()
-	vim.notify("Unpinned all buffers", vim.log.levels.INFO, notify_opts)
-end
-
-M.subcommands.toggle_autoclose = function()
-	local autoclose_state = subcommands.toggle_autoclose() and "enabled" or "disabled"
-	vim.notify("Autoclose " .. autoclose_state, vim.log.levels.INFO, notify_opts)
-end
-
-M.subcommands.telescope = function(opts)
-	local hbac_telescope = require("hbac.telescope")
-	if not hbac_telescope then
-		return
-	end
-	hbac_telescope.pin_picker(opts)
-end
-
-M.vim_cmd_name = "Hbac"
 
 M.vim_cmd_func = function(arg)
-	if M.subcommands[arg] then
-		M.subcommands[arg]()
+	if subcommands[arg] then
+		subcommands[arg]()
 	else
-		vim.notify("Unknown command: " .. arg, vim.log.levels.WARN, notify_opts)
+		vim.notify("Unknown command: " .. arg, vim.log.levels.WARN, config.notify_opts)
 	end
 end
 
-M.vim_cmd_opts = {
-	nargs = 1,
-	complete = function()
-		return { unpack(vim.tbl_keys(M.subcommands)) }
-	end,
-}
+
+M.create_user_command = function()
+	local opts = {
+		nargs = 1,
+		complete = function()
+			return { unpack(vim.tbl_keys(subcommands)) }
+		end,
+	}
+
+	vim.api.nvim_create_user_command("Hbac", function(args)
+		M.vim_cmd_func(args.args)
+	end, opts)
+end
 
 return M

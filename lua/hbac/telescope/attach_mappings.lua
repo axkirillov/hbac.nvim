@@ -1,8 +1,8 @@
 local action_state = require("telescope.actions.state")
 
-local hbac_config = require("hbac.setup").opts
+local config = require("hbac.config")
 local state = require("hbac.state")
-local subcommands = require("hbac.command.subcommands")
+local actions = require("hbac.command.actions")
 local make_finder = require("hbac.telescope.make_finder").make_finder
 
 local M = {}
@@ -31,16 +31,16 @@ local function hbac_toggle_selections(prompt_bufnr)
 	execute_telescope_action(prompt_bufnr, state.toggle_pin)
 end
 local function hbac_pin_all(prompt_bufnr)
-	execute_telescope_action(prompt_bufnr, subcommands.pin_all)
+	execute_telescope_action(prompt_bufnr, actions.pin_all)
 end
 local function hbac_unpin_all(prompt_bufnr)
-	execute_telescope_action(prompt_bufnr, subcommands.unpin_all)
+	execute_telescope_action(prompt_bufnr, actions.unpin_all)
 end
 local function hbac_close_unpinned(prompt_bufnr)
-	execute_telescope_action(prompt_bufnr, subcommands.close_unpinned)
+	execute_telescope_action(prompt_bufnr, actions.close_unpinned)
 end
 local function hbac_delete_buffer(prompt_bufnr)
-	execute_telescope_action(prompt_bufnr, hbac_config.close_command)
+	execute_telescope_action(prompt_bufnr, config.values.close_command)
 end
 
 M.attach_mappings = function(_, map)
@@ -52,7 +52,7 @@ M.attach_mappings = function(_, map)
 		toggle_selections = hbac_toggle_selections,
 	}
 
-	for mode, hbac_cmds in pairs(hbac_config.telescope.mappings) do
+	for mode, hbac_cmds in pairs(config.values.telescope.mappings) do
 		for hbac_cmd, key in pairs(hbac_cmds) do
 			map(mode, key, hbac_telescope_actions[hbac_cmd])
 		end

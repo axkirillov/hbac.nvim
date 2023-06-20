@@ -1,4 +1,6 @@
 local state = require("hbac.state")
+local config = require("hbac.config")
+
 local M = {}
 
 M.get_listed_buffers = function()
@@ -13,8 +15,7 @@ M.buf_autoclosable = function(bufnr)
 		return false
 	end
 	local buffer_windows = vim.fn.win_findbuf(bufnr)
-	local config = require("hbac.setup").opts
-	if #buffer_windows > 0 and not config.close_buffers_with_windows then
+	if #buffer_windows > 0 and not config.values.close_buffers_with_windows then
 		return false
 	end
 	return true

@@ -1,7 +1,8 @@
 local command = require("hbac.command")
+local setup = require("hbac.setup")
 
 return {
-	setup = require("hbac.setup").setup,
+	setup = setup.setup,
 	cmd = command.vim_cmd_func,
 	close_unpinned = command.subcommands.close_unpinned,
 	telescope = command.subcommands.telescope,
