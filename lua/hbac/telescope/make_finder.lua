@@ -1,30 +1,35 @@
 local finders = require("telescope.finders")
+local results_opts = require("hbac.telescope.results_opts")
 
-local M = {}
+local M = {
+	default_selection_idx = 1,
+	finder_opts = {},
+}
 
-M.make_finder = function()
-	local make_display = require("hbac.telescope.make_display")
-	local utils = require("hbac.utils")
+local function get_entries(opts)
 
-	local display = make_display.display
+	local display = require("hbac.telescope.make_display").display
+	local buflist = require("hbac.utils").get_listed_buffers()
+	local filtered_bufnrs = {}
+	filtered_bufnrs, M.default_selection_idx = results_opts.filter_bufnrs_by_opts(opts, buflist)
 
-	local function get_entries()
-		local entries = {}
-		local buflist = utils.get_listed_buffers()
-		for _, bufnr in ipairs(buflist) do
-			local bufname = vim.api.nvim_buf_get_name(bufnr)
-			table.insert(entries, {
-				filename = bufname,
-				display = display,
-				value = bufnr,
-				ordinal = bufname,
-			})
-		end
-		return entries
+	local entries = {}
+	for _, bufnr in ipairs(filtered_bufnrs) do
+		local bufname = vim.api.nvim_buf_get_name(bufnr)
+		table.insert(entries, {
+			filename = bufname,
+			display = display,
+			value = bufnr,
+			ordinal = bufname,
+		})
 	end
+	return entries
+end
 
+M.make_finder = function(opts)
+	M.finder_opts = opts or {}
 	return finders.new_table({
-		results = get_entries(),
+		results = get_entries(opts),
 		entry_maker = function(entry)
 			return {
 				filename = entry.filename,
