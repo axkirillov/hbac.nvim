@@ -1,11 +1,10 @@
-local autocommands = require("hbac.autocommands")
-local config = require("hbac.config")
 local state = require("hbac.state")
-local utils = require("hbac.utils")
 
 local M = {}
 
 M.close_unpinned = function()
+	local config = require("hbac.config")
+	local utils = require("hbac.utils")
 	local buflist = utils.get_listed_buffers()
 	for _, bufnr in ipairs(buflist) do
 		if utils.buf_autoclosable(bufnr) then
@@ -14,13 +13,14 @@ M.close_unpinned = function()
 	end
 end
 
-M.toggle_pin = function()
-	local bufnr = vim.api.nvim_get_current_buf()
+M.toggle_pin = function(bufnr)
+	bufnr = bufnr or vim.api.nvim_get_current_buf()
 	local pinned_state = state.toggle_pin(bufnr) and "pinned" or "unpinned"
 	return bufnr, pinned_state
 end
 
 M.set_all = function(pin_value)
+	local utils = require("hbac.utils")
 	local buflist = utils.get_listed_buffers()
 	for _, bufnr in ipairs(buflist) do
 		state.pinned_buffers[bufnr] = pin_value
@@ -36,6 +36,7 @@ M.unpin_all = function()
 end
 
 M.toggle_autoclose = function()
+	local autocommands = require("hbac.autocommands")
 	state.autoclose_enabled = not state.autoclose_enabled
 	if state.autoclose_enabled then
 		autocommands.autoclose.setup()

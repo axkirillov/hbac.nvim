@@ -33,6 +33,8 @@ M.telescope = function(opts)
 	if not hbac_telescope then
 		return
 	end
+	local telescope_opts = require("hbac.config").values.telescope
+	opts = vim.tbl_deep_extend("force", telescope_opts, opts or {})
 	hbac_telescope.pin_picker(opts)
 end
 
