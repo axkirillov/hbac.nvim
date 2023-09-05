@@ -3,11 +3,12 @@ local action_state = require("telescope.actions.state")
 local config = require("hbac.config")
 local state = require("hbac.state")
 local actions = require("hbac.command.actions")
-local make_finder = require("hbac.telescope.make_finder").make_finder
+local make_finder = require("hbac.telescope.make_finder")
 
 local M = {}
 
 local function execute_telescope_action(prompt_bufnr, action)
+	local finder, finder_opts = make_finder.make_finder, make_finder.finder_opts
 	local picker = action_state.get_current_picker(prompt_bufnr)
 	local multi_selection = picker:get_multi_selection()
 
@@ -24,7 +25,7 @@ local function execute_telescope_action(prompt_bufnr, action)
 	picker:register_completion_callback(function()
 		picker:set_selection(row)
 	end)
-	picker:refresh(make_finder(), { reset_prompt = false })
+	picker:refresh(finder(finder_opts), { reset_prompt = false })
 end
 
 local function hbac_toggle_selections(prompt_bufnr)
