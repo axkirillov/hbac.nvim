@@ -1,3 +1,4 @@
+local plenary = require("plenary")
 local finders = require("telescope.finders")
 local results_opts = require("hbac.telescope.results_opts")
 
@@ -20,7 +21,7 @@ local function get_entries(opts)
 			filename = bufname,
 			display = display,
 			value = bufnr,
-			ordinal = bufname,
+			ordinal = plenary.path:new(bufname):make_relative(),
 		})
 	end
 	return entries
@@ -36,7 +37,7 @@ M.make_finder = function(opts)
 				value = entry.value,
 				display = entry.display,
 				ordinal = entry.ordinal,
-				path = entry.ordinal,
+				path = entry.filename,
 			}
 		end,
 	})

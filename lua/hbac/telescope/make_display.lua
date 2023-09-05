@@ -11,7 +11,7 @@ local os_home = vim.loop.os_homedir()
 local M = {}
 
 M.display = function(entry)
-	local bufnr, bufname = entry.value, entry.ordinal
+	local bufnr, bufname = entry.value, entry.filename
 
 	local function get_pin_icon()
 		local pin_icons = config.values.telescope.pin_icons
