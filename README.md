@@ -23,7 +23,7 @@ use {
 }
 ```
 with [lazy.nvim](https://github.com/folke/lazy.nvim)
-```lua	
+```lua
 {
   'axkirillov/hbac.nvim',
   dependencies = {
@@ -48,24 +48,8 @@ require("hbac").setup({
   end,
   close_buffers_with_windows = false, -- hbac will close buffers with associated windows if this option is `true`
   telescope = {
-    mappings = {
-      n = {
-        close_unpinned = "<M-c>",
-        delete_buffer = "<M-x>",
-        pin_all = "<M-a>",
-        unpin_all = "<M-u>",
-        toggle_selections = "<M-y>",
-      },
-      i = {
-        -- as above
-      },
+    -- See #telescope-configuration below
     },
-    -- Pinned/unpinned icons and their hl groups. Defaults to nerdfont icons
-    pin_icons = {
-      pinned = { "󰐃 ", hl = "DiagnosticOk" },
-      unpinned = { "󰤱 ", hl = "DiagnosticError" },
-    },
-  },
 })
 ```
 
@@ -82,6 +66,7 @@ or
 - `:Hbac telescope` - open the telescope picker
 
 or, if you prefer to use lua:
+
 ```lua
 local hbac = require("hbac")
 hbac.toggle_pin()
@@ -98,22 +83,76 @@ The plugin provides a [telescope.nvim](https://github.com/nvim-telescope/telesco
 
 The picker provides the following actions:
 
-- `hbac_toggle_selections` - toggle the pin state of the selected buffers (either
-  single or multi-selections)
+- `hbac_toggle_selections` - toggle the pin state of the selected buffers (either single or multi-selections)
 - `hbac_pin_all` - pin all buffers
 - `hbac_unpin_all` - unpin all buffers
 - `hbac_close_unpinned` - close all unpinned buffers
 - `hbac_delete_buffer` - delete the selected buffers with the function set in `opts.close_command` (`nvim_buf_delete` by default`)
 
-You can also call the picker function directly and pass a table of options (see `:h telescope.setup()` for valid option keys):
+### Telescope configuration
+
+Hbac's telescope picker takes the options you would expect to pass to the builtin Telescope buffer picker, including those found in `:h telescope.builtin.buffers()` and those in `:h telescope.setup()` relevant to a buffer picker.
+
+The defaults of `telescope` key of the setup table are:
 
 ```lua
-require("hbac.telescope").pin_picker({
+-- These actions refresh the picker and the pin states/icons of the open buffers
+-- Use these instead of e.g. `hbac.pin_all()`
+local actions = require("hbac.telescope.actions")
+
+telescope = {
+    sort_mru = true,
+    sort_lastused = true,
+    selection_strategy = "row",
+    mappings = {
+      i = {
+        ["<M-c>"] = actions.close_unpinned,
+        ["<M-x>"] = actions.delete_buffer,
+        ["<M-a>"] = actions.pin_all,
+        ["<M-u>"] = actions.unpin_all,
+        ["<M-y>"] = actions.toggle_selections,
+      },
+      n = {
+        -- as above
+      },
+    },
+    -- Pinned/unpinned icons and their hl groups. Defaults to nerdfont icons
+    pin_icons = {
+      pinned = { "󰐃 ", hl = "DiagnosticOk" },
+      unpinned = { "󰤱 ", hl = "DiagnosticError" },
+    },
+}
+```
+
+`pin_icons` is unique to Hbac, but the other keys are standard Telescope options. You can add other options and mappings to your setup config which will deep-extend the defaults. For example:
+
+```lua
+telescope = {
+  layout_strategy = "vertical",
+  sort_lastused = false,
+  ignore_current_buffer = true,
+  prompt_prefix = "Hbac! ",
+  mappings = {
+    i = {
+      ["<CR>"] = telescope_actions.select_drop,
+      ["<C-CR>"] = telescope_actions.select_default,
+      ["<M-z>"] = function() print("Hello from Hbac!") end,
+    },
+  }
+}
+```
+
+You can also pass options to the picker directly when calling its function. These options will deep-extend your setup table.
+
+```lua
+require("hbac").telescope({
+  file_ignore_patterns = { ".json" },
   layout_strategy = "horizontal",
-  initial_mode = "normal",
   -- etc.
 })
 ```
+
+There are some options that are not supported like `bufnr_width` and `path_display`. Please consider contributing or opening an issue if something essential is missing.
 
 ## How to check the pin status of the current buffer
 
