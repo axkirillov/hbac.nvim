@@ -28,14 +28,8 @@ M.toggle_autoclose = function()
 	vim.notify("Autoclose " .. autoclose_state, vim.log.levels.INFO, notify_opts)
 end
 
-M.telescope = function(opts)
-	local hbac_telescope = require("hbac.telescope")
-	if not hbac_telescope then
-		return
-	end
-	local telescope_opts = require("hbac.config").values.telescope
-	opts = vim.tbl_deep_extend("force", telescope_opts, opts or {})
-	hbac_telescope.pin_picker(opts)
+M.telescope = function()
+	vim.notify('This command has been removed. Check the docs for a migration guide.', vim.log.levels.WARN, notify_opts)
 end
 
 return M

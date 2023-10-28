@@ -12,29 +12,13 @@ The main feature of this plugin, however, is the automatic closing of buffers. I
 
 with [packer.nvim](https://github.com/wbthomason/packer.nvim)
 ```lua
-use {
-  'axkirillov/hbac.nvim',
-  requires = {
-  -- these are optional, add them, if you want the telescope module
-    'nvim-telescope/telescope.nvim',
-    'nvim-lua/plenary.nvim',
-    'nvim-tree/nvim-web-devicons'
-    }
-}
+use { 'axkirillov/hbac.nvim' }
 ```
 with [lazy.nvim](https://github.com/folke/lazy.nvim)
 ```lua
 {
   'axkirillov/hbac.nvim',
-  dependencies = {
-  -- these are optional, add them, if you want the telescope module
-    'nvim-telescope/telescope.nvim',
-    'nvim-lua/plenary.nvim',
-    'nvim-tree/nvim-web-devicons'
-  },
-  config = function ()
-    require("hbac").setup()
-  end
+  config = true,
 }
 ```
 
@@ -74,12 +58,26 @@ hbac.close_unpinned()
 hbac.pin_all()
 hbac.unpin_all()
 hbac.toggle_autoclose()
-hbac.telescope()
 ```
 
-## Telescope integration
+## Telescope extension
 
-The plugin provides a [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim) integration to view and manage the pin states of buffers. This requires telescope and its dependency [plenary.nvim](https://github.com/nvim-lua/plenary.nvim). [nvim-web-devicons](https://github.com/nvim-tree/nvim-web-devicons) is also recommended.
+The plugin provides a [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim) extension to view and manage the pin states of buffers. This requires telescope and its dependency [plenary.nvim](https://github.com/nvim-lua/plenary.nvim). [nvim-web-devicons](https://github.com/nvim-tree/nvim-web-devicons) is also recommended.
+
+### Usage
+To use the telescope picker, load the hbac telescope extension in your config file.
+```lua
+require('telescope').load_extension('hbac')
+```
+
+After loading the extension, you can execute the picker like so:
+```
+:Telescope hbac buffers
+```
+or if you prefer lua:
+```lua
+require('telescope').extensions.hbac.buffers()
+```
 
 The picker provides the following actions:
 
@@ -145,7 +143,7 @@ telescope = {
 You can also pass options to the picker directly when calling its function. These options will deep-extend your setup table.
 
 ```lua
-require("hbac").telescope({
+require("telescope").extensions.hbac.buffers({
   file_ignore_patterns = { ".json" },
   layout_strategy = "horizontal",
   -- etc.
@@ -170,3 +168,4 @@ lualine_c = {
     }
   }
 ```
+

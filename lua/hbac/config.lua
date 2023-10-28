@@ -1,14 +1,4 @@
-local actions = require("hbac.telescope.actions")
-
 local M = {}
-
-local action_mappings = {
-	["<M-c>"] = actions.close_unpinned,
-	["<M-x>"] = actions.delete_buffer,
-	["<M-a>"] = actions.pin_all,
-	["<M-u>"] = actions.unpin_all,
-	["<M-y>"] = actions.toggle_pin,
-}
 
 local defaults = {
 	autoclose = true,
@@ -19,10 +9,8 @@ local defaults = {
 		sort_mru = true,
 		sort_lastused = true,
 		selection_strategy = "row",
-		mappings = {
-			n = action_mappings,
-			i = action_mappings,
-		},
+		use_default_mappings = true,
+		mappings = nil,
 		pin_icons = {
 			pinned = { "󰐃 ", hl = "DiagnosticOk" },
 			unpinned = { "󰤱 ", hl = "DiagnosticError" },
