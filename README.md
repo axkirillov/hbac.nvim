@@ -104,6 +104,7 @@ telescope = {
     sort_mru = true,
     sort_lastused = true,
     selection_strategy = "row",
+    use_default_mappings = true,  -- false to not include the mappings below
     mappings = {
       i = {
         ["<M-c>"] = actions.close_unpinned,
