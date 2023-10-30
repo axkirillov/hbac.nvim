@@ -29,7 +29,7 @@ M.toggle_autoclose = function()
 end
 
 M.telescope = function()
-	vim.notify('This command has been removed. Check https://github.com/axkirillov/hbac.nvim?tab=readme-ov-file#telescope-integration for how to enable the telescope extension', vim.log.levels.WARN, notify_opts)
+	vim.notify('This command has been removed. Check https://github.com/axkirillov/hbac.nvim?tab=readme-ov-file#telescope-extension for how to enable the telescope extension', vim.log.levels.WARN, notify_opts)
 end
 
 return M
