@@ -25,10 +25,11 @@ end
 
 local parse_opts = function(opts)
 	local telescope_opts = require("hbac.config").values.telescope
-	opts.mappings = telescope_opts.use_default_mappings
-		and vim.tbl_deep_extend('force', { i = default_mappings, n = default_mappings }, telescope_opts.mappings or {})
-		or (telescope_opts.mappings or {})
-	return vim.tbl_deep_extend("force", telescope_opts, opts or {})
+	if telescope_opts.use_default_mappings then
+		default_mappings = { i = default_mappings, n = default_mappings }
+		telescope_opts.mappings = vim.tbl_deep_extend("force", default_mappings, telescope_opts.mappings)
+	end
+	return vim.tbl_deep_extend("force", telescope_opts, opts)
 end
 
 M.pin_picker = function(opts)

@@ -10,7 +10,7 @@ local defaults = {
 		sort_lastused = true,
 		selection_strategy = "row",
 		use_default_mappings = true,
-		mappings = nil,
+		mappings = {},
 		pin_icons = {
 			pinned = { "󰐃 ", hl = "DiagnosticOk" },
 			unpinned = { "󰤱 ", hl = "DiagnosticError" },
