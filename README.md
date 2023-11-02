@@ -109,7 +109,7 @@ telescope = {
         ["<M-x>"] = actions.delete_buffer,
         ["<M-a>"] = actions.pin_all,
         ["<M-u>"] = actions.unpin_all,
-        ["<M-y>"] = actions.toggle_selections,
+        ["<M-y>"] = actions.toggle_pin,
       },
       n = {
         -- as above
