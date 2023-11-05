@@ -21,4 +21,15 @@ M.buf_autoclosable = function(bufnr)
 	return true
 end
 
+M.int_explode = function(str)
+	if string.len(str) == 0 then
+		return {}
+	end
+	local t = {}
+	for entry in string.gmatch(str, "[^,]+") do
+		table.insert(t, tonumber(entry))
+	end
+	return t
+end
+
 return M

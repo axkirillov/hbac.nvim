@@ -19,20 +19,28 @@ M.toggle_pin = function(bufnr)
 	return bufnr, pinned_state
 end
 
-M.set_all = function(pin_value)
+local set_all = function(pin_value)
 	local utils = require("hbac.utils")
 	local buflist = utils.get_listed_buffers()
-	for _, bufnr in ipairs(buflist) do
-		state.pinned_buffers[bufnr] = pin_value
+	local pins = utils.int_explode(vim.g.hbac_buffers or "")
+	if not pin_value then
+		vim.g.hbac_buffers = ""
+		return
 	end
+	for _, bufnr in ipairs(buflist) do
+		if not vim.tbl_contains(pins, bufnr) then
+			table.insert(pins, bufnr)
+		end
+	end
+	vim.g.hbac_buffers = table.concat(pins, ",")
 end
 
 M.pin_all = function()
-	M.set_all(true)
+	set_all(true)
 end
 
 M.unpin_all = function()
-	M.set_all(false)
+	set_all(false)
 end
 
 M.toggle_autoclose = function()
