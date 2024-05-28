@@ -170,3 +170,17 @@ lualine_c = {
   }
 ```
 
+## Resession.nvim Session Support
+
+Resession extension allows to save and restore plugins custom data.
+
+To activate save and restore of pinned buffers, add the following to your resession config:
+
+```lua
+require("resession").setup({
+  extensions = {
+    hbac = {
+    },
+  },
+})
+```
