@@ -19,11 +19,11 @@ M.toggle_pin = function(bufnr)
 	return bufnr, pinned_state
 end
 
-M.set_all = function(pin_value)
+M.set_all = function(pinned)
 	local utils = require("hbac.utils")
 	local buflist = utils.get_listed_buffers()
 	for _, bufnr in ipairs(buflist) do
-		state.pinned_buffers[bufnr] = pin_value
+		state.set_pin(bufnr, pinned)
 	end
 end
 
