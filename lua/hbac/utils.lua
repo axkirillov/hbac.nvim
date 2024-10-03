@@ -21,4 +21,21 @@ M.buf_autoclosable = function(bufnr)
 	return true
 end
 
+M.get_pins = function()
+	local pin_string = vim.g.Hbac_pinned_buffers or ""
+	if string.len(pin_string) == 0 then
+		return {}
+	end
+	local t = {}
+	for entry in string.gmatch(pin_string, "[^,]+") do
+		table.insert(t, tonumber(entry))
+	end
+	return t
+end
+
+M.set_pins = function(pins)
+	vim.g.Hbac_pinned_buffers = table.concat(pins, ",")
+end
+
+
 return M
