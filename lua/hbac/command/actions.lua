@@ -16,6 +16,9 @@ end
 M.toggle_pin = function(bufnr)
 	bufnr = bufnr or vim.api.nvim_get_current_buf()
 	local pinned_state = state.toggle_pin(bufnr) and "pinned" or "unpinned"
+
+	vim.api.nvim_exec_autocmds("User",
+		{ pattern = "HBACPinned", data = { bufnr = bufnr, state = pinned_state } })
 	return bufnr, pinned_state
 end
 
