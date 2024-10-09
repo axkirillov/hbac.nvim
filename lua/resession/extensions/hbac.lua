@@ -1,4 +1,4 @@
-local hbac_state = require("hbac.state")
+local utils = require("hbac.utils")
 
 local M = {}
 
@@ -15,11 +15,9 @@ end
 
 local function get_pinned_buffers()
 	local pinned_buffers = {}
-	for k, v in pairs(hbac_state.pinned_buffers) do
-		if v == true then
-			if vim.api.nvim_buf_is_valid(k) then
-				pinned_buffers[#pinned_buffers + 1] = vim.api.nvim_buf_get_name(k)
-			end
+	for _, v in ipairs(utils.get_pins()) do
+		if vim.api.nvim_buf_is_valid(v) then
+			pinned_buffers[#pinned_buffers + 1] = vim.api.nvim_buf_get_name(v)
 		end
 	end
 	return vim.json.encode(pinned_buffers)
@@ -29,10 +27,10 @@ local function set_pinned_buffers(pinned_buffers)
 	local cache = {}
 	for _, v in pairs(vim.json.decode(pinned_buffers)) do
 		for _, buf in pairs(get_buffer_ids(v)) do
-			cache[buf] = true
+			table.insert(cache, tonumber(buf))
 		end
 	end
-	hbac_state.pinned_buffers = cache
+	utils.set_pins(cache)
 end
 
 M.on_save = function()
