@@ -38,10 +38,12 @@ local function check_buffers()
 	end
 
 	local buffers = vim.tbl_filter(function(buf)
-		-- Filter out buffers that are not listed
-		return vim.api.nvim_buf_get_option(buf, "buflisted")
+		-- Filter out buffers that are not listed.
+		return vim.api.nvim_buf_get_option(buf, "buflisted") and (config.values.count_pinned or !state.is_pinned(buf))
 	end, vim.api.nvim_list_bufs())
+
 	local num_buffers = #buffers
+
 	if num_buffers <= config.values.threshold then
 		return
 	end
