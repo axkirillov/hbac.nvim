@@ -27,6 +27,7 @@ with [lazy.nvim](https://github.com/folke/lazy.nvim)
 require("hbac").setup({
   autoclose     = true, -- set autoclose to false if you want to close manually
   threshold     = 10, -- hbac will start closing unedited buffers once that number is reached
+  count_pinned  = true, -- whether pinned buffers will count towards the autoclose threshold
   close_command = function(bufnr)
     vim.api.nvim_buf_delete(bufnr, {})
   end,

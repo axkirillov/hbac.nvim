@@ -3,6 +3,7 @@ local M = {}
 local defaults = {
 	autoclose = true,
 	threshold = 10,
+	count_pinned = true,
 	close_buffers_with_windows = false,
 	close_command = function(bufnr) vim.api.nvim_buf_delete(bufnr, {}) end,
 	telescope = {
