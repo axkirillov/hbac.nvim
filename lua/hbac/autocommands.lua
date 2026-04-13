@@ -104,6 +104,7 @@ M.autoclose.disable = function()
 end
 
 M.autopin.setup = function()
+	state.autopin_enabled = true
 	local id = vim.api.nvim_create_augroup(M.autopin.name, {
 		clear = false,
 	})
@@ -124,6 +125,14 @@ M.autopin.setup = function()
 			})
 		end,
 	})
+end
+
+M.autopin.disable = function()
+	-- pcall failure likely indicates that augroup doesn't exist - which is fine, since its
+	-- autocmds is effectively disabled in that case
+	pcall(function()
+		vim.api.nvim_del_augroup_by_name(M.autopin.name)
+	end)
 end
 
 return M

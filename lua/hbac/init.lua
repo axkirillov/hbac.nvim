@@ -9,5 +9,6 @@ return {
 	pin_all = command.subcommands.pin_all,
 	unpin_all = command.subcommands.unpin_all,
 	toggle_autoclose = command.subcommands.toggle_autoclose,
+	toggle_autopin = command.subcommands.toggle_autopin,
 	toggle_pin = command.subcommands.toggle_pin,
 }

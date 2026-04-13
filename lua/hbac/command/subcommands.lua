@@ -28,6 +28,11 @@ M.toggle_autoclose = function()
 	vim.notify("Autoclose " .. autoclose_state, vim.log.levels.INFO, notify_opts)
 end
 
+M.toggle_autopin = function()
+	local autopin_state = actions.toggle_autopin() and "enabled" or "disabled"
+	vim.notify("Autopin " .. autopin_state, vim.log.levels.INFO, notify_opts)
+end
+
 M.telescope = function()
 	vim.notify('This command has been removed. Check https://github.com/axkirillov/hbac.nvim?tab=readme-ov-file#telescope-extension for how to enable the telescope extension', vim.log.levels.WARN, notify_opts)
 end

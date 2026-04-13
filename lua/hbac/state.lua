@@ -1,5 +1,6 @@
 local M = {
 	autoclose_enabled = false,
+	autopin_enabled = false,
 }
 
 M.is_pinned = function(bufnr)
