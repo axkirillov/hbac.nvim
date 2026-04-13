@@ -104,6 +104,9 @@ M.autoclose.disable = function()
 end
 
 M.autopin.setup = function()
+	if #config.values.autopin_events == 0 then
+		return
+	end
 	state.autopin_enabled = true
 	local id = vim.api.nvim_create_augroup(M.autopin.name, {
 		clear = false,

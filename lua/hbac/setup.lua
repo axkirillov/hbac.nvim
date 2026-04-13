@@ -12,8 +12,6 @@ M.setup = function(user_opts)
 		autocommands.autopin.setup()
 	end
 
-	autocommands.autopin.setup()
-
 	command.create_user_command()
 
 	if config.values.autoclose then
