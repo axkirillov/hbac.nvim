@@ -1,6 +1,7 @@
 local actions = require("hbac.command.actions")
 local notify_opts = require("hbac.command.config").notify_opts
 local config = require("hbac.config")
+local state = require("hbac.state")
 
 local M = {}
 
@@ -30,7 +31,13 @@ M.toggle_autoclose = function()
 end
 
 M.toggle_autopin = function()
+	if (not state.autopin_enabled) and #config.values.autopin_events == 0 then
+		vim.notify("Cannot enable autopin. No autopin events are configured.", vim.log.levels.WARN, notify_opts)
+		return
+	end
+
 	local autopin_enabled = actions.toggle_autopin()
+
 	if autopin_enabled then
 		vim.notify("Autopin enabled on events { " .. table.concat(config.values.autopin_events, ",") .. " }", vim.log.levels.INFO, notify_opts)
 	else
