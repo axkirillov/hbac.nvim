@@ -2,6 +2,8 @@ local M = {}
 
 local defaults = {
 	autoclose = true,
+	autopin = true,
+	autopin_events = { "InsertEnter", "BufModifiedSet" },
 	threshold = 10,
 	count_pinned = true,
 	close_buffers_with_windows = false,

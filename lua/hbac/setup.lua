@@ -8,7 +8,9 @@ local M = {
 M.setup = function(user_opts)
 	config.setup(user_opts)
 
-	autocommands.autopin.setup()
+	if config.values.autopin then
+		autocommands.autopin.setup()
+	end
 
 	command.create_user_command()
 

@@ -49,4 +49,15 @@ M.toggle_autoclose = function()
 	return state.autoclose_enabled
 end
 
+M.toggle_autopin = function()
+	local autocommands = require("hbac.autocommands")
+	state.autopin_enabled = not state.autopin_enabled
+	if state.autopin_enabled then
+		autocommands.autopin.setup()
+		return state.autopin_enabled
+	end
+	autocommands.autopin.disable()
+	return state.autopin_enabled
+end
+
 return M
