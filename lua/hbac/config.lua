@@ -1,28 +1,30 @@
 local M = {}
 
 local defaults = {
-	autoclose = true,
-	autopin = true,
-	autopin_events = { "InsertEnter", "BufModifiedSet" },
-	threshold = 10,
-	count_pinned = true,
-	close_buffers_with_windows = false,
-	close_command = function(bufnr) vim.api.nvim_buf_delete(bufnr, {}) end,
-	telescope = {
-		sort_mru = true,
-		sort_lastused = true,
-		selection_strategy = "row",
-		use_default_mappings = true,
-		mappings = {},
-		pin_icons = {
-			pinned = { "󰐃 ", hl = "DiagnosticOk" },
-			unpinned = { "󰤱 ", hl = "DiagnosticError" },
-		},
-	},
+  autoclose = true,
+  autopin = true,
+  autopin_events = { "InsertEnter", "BufModifiedSet" },
+  threshold = 10,
+  count_pinned = true,
+  close_buffers_with_windows = false,
+  close_command = function(bufnr)
+    vim.api.nvim_buf_delete(bufnr, {})
+  end,
+  telescope = {
+    sort_mru = true,
+    sort_lastused = true,
+    selection_strategy = "row",
+    use_default_mappings = true,
+    mappings = {},
+    pin_icons = {
+      pinned = { "󰐃 ", hl = "DiagnosticOk" },
+      unpinned = { "󰤱 ", hl = "DiagnosticError" },
+    },
+  },
 }
 
 M.setup = function(user_config)
-	M.values = vim.tbl_deep_extend("force", defaults, user_config or {})
+  M.values = vim.tbl_deep_extend("force", defaults, user_config or {})
 end
 
 return M
