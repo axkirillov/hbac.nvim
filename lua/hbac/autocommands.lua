@@ -11,6 +11,31 @@ local M = {
 	},
 }
 
+-- Track buffers that should be pinned via OptionSet
+-- false = waiting for modified event, true = already pinned
+local _optionset_buffers = {}
+local _optionset_autocmd_id = nil
+
+-- Setup global OptionSet autocmd (called once)
+local function setup_optionset_autocmd()
+	if _optionset_autocmd_id then
+		return
+	end
+
+	_optionset_autocmd_id = vim.api.nvim_create_autocmd("OptionSet", {
+		group = vim.api.nvim_create_augroup("hbac_optionset", { clear = true }),
+		pattern = "modified",
+		callback = function()
+			local bufnr = vim.api.nvim_get_current_buf()
+			-- Only pin if this buffer is waiting for OptionSet and not already pinned
+			if _optionset_buffers[bufnr] == false and not state.is_pinned(bufnr) then
+				_optionset_buffers[bufnr] = true
+				state.toggle_pin(bufnr)
+			end
+		end,
+	})
+end
+
 local function debounce(func, timeout)
 	local timer_id
 	return function(...)
@@ -39,7 +64,8 @@ local function check_buffers()
 
 	local buffers = vim.tbl_filter(function(buf)
 		-- Filter out buffers that are not listed, and pinned buffers if count_pinned == false
-		return vim.api.nvim_buf_get_option(buf, "buflisted") and (config.values.count_pinned or not state.is_pinned(buf))
+		return vim.api.nvim_buf_get_option(buf, "buflisted")
+			and (config.values.count_pinned or not state.is_pinned(buf))
 	end, vim.api.nvim_list_bufs())
 
 	local num_buffers = #buffers
@@ -108,24 +134,41 @@ M.autopin.setup = function()
 		return
 	end
 	state.autopin_enabled = true
+
 	local id = vim.api.nvim_create_augroup(M.autopin.name, {
 		clear = false,
 	})
+
 	vim.api.nvim_create_autocmd({ "BufRead" }, {
 		group = id,
 		pattern = { "*" },
 		callback = function()
-			vim.api.nvim_create_autocmd(config.values.autopin_events, {
-				buffer = 0,
-				once = true,
-				callback = function()
-					local bufnr = vim.api.nvim_get_current_buf()
-					if state.is_pinned(bufnr) then
-						return
-					end
-					state.toggle_pin(bufnr)
-				end,
-			})
+			local bufnr = vim.api.nvim_get_current_buf()
+			local pinned = false
+
+			local function try_pin()
+				if pinned or state.is_pinned(bufnr) then
+					return
+				end
+				pinned = true
+				state.toggle_pin(bufnr)
+			end
+
+			for _, event in ipairs(config.values.autopin_events) do
+				-- Replace deprecated BufModifiedSet with OptionSet modified for Neovim 0.12+
+				-- See: https://github.com/neovim/neovim/commit/443171328531e33a7caecda0b81dadd826518a58
+				if event == "BufModifiedSet" and vim.fn.has("nvim-0.12") == 1 then
+					-- Mark this buffer for autopin via OptionSet
+					_optionset_buffers[bufnr] = false
+					setup_optionset_autocmd()
+				else
+					vim.api.nvim_create_autocmd(event, {
+						buffer = bufnr,
+						once = true,
+						callback = try_pin,
+					})
+				end
+			end
 		end,
 	})
 end

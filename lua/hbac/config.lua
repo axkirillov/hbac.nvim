@@ -7,7 +7,9 @@ local defaults = {
 	threshold = 10,
 	count_pinned = true,
 	close_buffers_with_windows = false,
-	close_command = function(bufnr) vim.api.nvim_buf_delete(bufnr, {}) end,
+	close_command = function(bufnr)
+		vim.api.nvim_buf_delete(bufnr, {})
+	end,
 	telescope = {
 		sort_mru = true,
 		sort_lastused = true,
